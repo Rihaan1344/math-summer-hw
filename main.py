@@ -6,7 +6,7 @@ import os
 
 can_calculate = False
 
-TOLERANCE = 5
+TOLERANCE = 10
 
 def get_coords(place):
     url = "https://nominatim.openstreetmap.org/search"
