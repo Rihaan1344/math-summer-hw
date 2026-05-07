@@ -103,6 +103,10 @@ if submitted:
         st.write("Maybe try something else?")
 
 if can_calculate:
+    investigate(0, 1, 1)
+    investigate(1, 2, 2)
+    investigate(0, 2, 3)
+
     retrieve_points = lambda idx: (data.loc[idx, "lon"], data.loc[idx, "lon"])
     p1, p2, p3 = (retrieve_points(i) for i in range(0, 3))
 
