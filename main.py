@@ -5,7 +5,7 @@ from geopy.distance import geodesic as gd
 
 can_calculate = False
 
-TOLERANCE = 1
+TOLERANCE = 5
 
 def get_coords(place):
     url = "https://nominatim.openstreetmap.org/search"
