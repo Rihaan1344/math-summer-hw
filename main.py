@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 from geopy.distance import geodesic as gd
+import os
 
 can_calculate = False
 
@@ -48,7 +49,7 @@ def check_collinear(p1, p2, p3):
 
     return area
 
-def investigate(place1_index: int, place2_index: int, inv_num: int) -> None:
+def investigate(place1_index: int, place2_index: int, inv_num: int) -> list[float]:
     estimate_point_1 = (data.loc[place1_index, "lon"], data.loc[place1_index, "lat"])
     estimate_point_2 = (data.loc[place2_index, "lon"], data.loc[place2_index, "lat"])
 
@@ -75,8 +76,19 @@ def investigate(place1_index: int, place2_index: int, inv_num: int) -> None:
     st.latex(f"d_{{real}} = {real}")
     st.latex(f"d_{{estimate}} = {estimate}")
     st.latex(f"Error = d_{{real}} - d_{{estimate}} = {real - estimate}")
-
-    return None
+    st.space("medium")
+    _, col2, _ = st.columns([1, 3, 1], vertical_alignment="bottom")
+    with col2:
+        col2.bar_chart(data = (bar_df := pd.DataFrame(
+            {
+                "Type": ["Estimated", "Real"],
+                "Distances": [estimate, real]
+            }
+        )), x = "Type", y = "Distances", width="stretch")
+    
+    int_point_1 = tuple(int(point) for point in estimate_point_1)
+    int_point_2 = tuple(int(point) for point in estimate_point_2)
+    return [int_point_1, int_point_2, estimate, real]
 
 st.title("_Collinearity on Earth: Test it out!_")
 
@@ -98,7 +110,6 @@ if submitted:
             data = [get_coords(place1) , get_coords(place2), get_coords(place3)],
             columns=["name", "lat", "lon", "size"]
         )
-        print(data)
         my_map = st.map(data, size = "size")
         can_calculate = True
 
@@ -107,9 +118,17 @@ if submitted:
         st.write("Maybe try something else?")
 
 if can_calculate:
-    investigate(0, 1, 1)
-    investigate(1, 2, 2)
-    investigate(0, 2, 3)
+    compare_tupple1 = investigate(0, 1, 1)
+    compare_tuple2 = investigate(1, 2, 2)
+    compare_tuple3 = investigate(0, 2, 3)
+
+    compare_tupple1.append(f"{data.loc[0, 'name']}, and {data.loc[1, 'name']}")
+    compare_tuple2.append(f"{data.loc[1, 'name']}, and {data.loc[2, 'name']}")
+    compare_tuple3.append(f"{data.loc[0, 'name']}, and {data.loc[2, 'name']}")
+
+    print(compare_tupple1)
+    print(compare_tuple2)
+    print(compare_tuple3)
 
     retrieve_points = lambda idx: (data.loc[idx, "lon"], data.loc[idx, "lat"])
     p1, p2, p3 = (retrieve_points(i) for i in range(0, 3))
@@ -127,5 +146,16 @@ if can_calculate:
         st.write("This value is too big to be considered collinear. Hence we can say that the places are not collinear!")
 
     st.divider()
-    st.subheader("Coordinates plotted on graph", text_alignment="center")
-    st.line_chart(data = data, x = "lon", y = "lat", x_label = "Longitude", y_label = "Latitude")
+    chart_container = st.container(width = "stretch", height = 450, horizontal_alignment="center")
+    chart_container.subheader("Coordinates plotted on graph", text_alignment="center")
+    chart_container.line_chart(data = data, x = "lon", y = "lat", x_label = "Longitude", y_label = "Latitude")
+
+    distance_df = pd.DataFrame(
+        (compare_tupple1, compare_tuple2, compare_tuple3),
+        columns=["Coordinates of place 1", "Coordinates of place 2", "Estimated Distance", "Real Distance", "Places being compared"]
+    )
+    distance_df.to_excel(os.path.join(os.getcwd(), "data.xlsx"), index = False)
+    
+    st.divider()
+    st.subheader("Excel sheet data: ")
+    st.dataframe(distance_df)
