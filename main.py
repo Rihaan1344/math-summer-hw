@@ -126,10 +126,6 @@ if can_calculate:
     compare_tuple2.append(f"{data.loc[1, 'name']}, and {data.loc[2, 'name']}")
     compare_tuple3.append(f"{data.loc[0, 'name']}, and {data.loc[2, 'name']}")
 
-    print(compare_tupple1)
-    print(compare_tuple2)
-    print(compare_tuple3)
-
     retrieve_points = lambda idx: (data.loc[idx, "lon"], data.loc[idx, "lat"])
     p1, p2, p3 = (retrieve_points(i) for i in range(0, 3))
 
@@ -154,8 +150,16 @@ if can_calculate:
         (compare_tupple1, compare_tuple2, compare_tuple3),
         columns=["Coordinates of place 1", "Coordinates of place 2", "Estimated Distance", "Real Distance", "Places being compared"]
     )
-    distance_df.to_excel(os.path.join(os.getcwd(), "data.xlsx"), index = False)
+    distance_df.to_excel((path := os.path.join(os.getcwd(), "data.xlsx")), index = False)
     
     st.divider()
     st.subheader("Excel sheet data: ")
     st.dataframe(distance_df)
+    with open("data.xlsx", "rb") as file:
+        st.download_button(
+            label="Download",
+            data=file,
+            file_name="data.xlsx",
+            on_click="ignore",
+            icon=":material/download:", 
+        )
