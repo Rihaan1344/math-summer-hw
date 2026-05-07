@@ -46,7 +46,7 @@ def check_collinear(p1, p2, p3):
 
     return area
 
-def investigate(place1_index: int, place2_index: int, inv_num: int) -> tuple[float]:
+def investigate(place1_index: int, place2_index: int, inv_num: int) -> None:
     estimate_point_1 = (data.loc[place1_index, "lon"], data.loc[place1_index, "lat"])
     estimate_point_2 = (data.loc[place2_index, "lon"], data.loc[place2_index, "lat"])
 
@@ -72,7 +72,7 @@ def investigate(place1_index: int, place2_index: int, inv_num: int) -> tuple[flo
     st.latex(f"d_{{estimate}} = {estimate}")
     st.latex(f"Error = d_{{real}} - d_{{estimate}} = {real - estimate}")
 
-    return (estimate_point_1, estimate_point_2)
+    return None
 
 st.title("_Collinearity on Earth: Test it out!_")
 
@@ -117,7 +117,7 @@ if can_calculate:
     st.latex(r"\text{Area} = \frac{1}{2}\left|x_1(y_2-y_3)+x_2(y_3-y_1)+x_3(y_1-y_2)\right|")
     st.write("gives us the area of any three points on a plane.")
     st.write(f"Substituting our longitude and latitude values as x and y, we get {(a := check_collinear(p1, p2, p3))} sq. km")
-    if a < 0.1:
+    if a < 0.01:
         st.write("As this value is pretty close to zero, considering measurement errors and the huge distances we're dealing with, we can say that the places are collinear")
     else:
         st.write("This value is too big to be considered collinear. Hence we can say that the places are not collinear!")
