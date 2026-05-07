@@ -117,7 +117,7 @@ if can_calculate:
     st.latex(r"\text{Area} = \frac{1}{2}\left|x_1(y_2-y_3)+x_2(y_3-y_1)+x_3(y_1-y_2)\right|")
     st.write("gives us the area of any three points on a plane.")
     st.write(f"Substituting our longitude and latitude values as x and y, we get {(a := check_collinear(p1, p2, p3))} sq. km")
-    if a < 5:
+    if a < 0.1:
         st.write("As this value is pretty close to zero, considering measurement errors and the huge distances we're dealing with, we can say that the places are collinear")
     else:
         st.write("This value is too big to be considered collinear. Hence we can say that the places are not collinear!")
