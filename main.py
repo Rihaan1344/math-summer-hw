@@ -59,23 +59,23 @@ def investigate(place1_index: int, place2_index: int, inv_num: int) -> list[floa
     st.divider()
     st.subheader(f"_Investigation {inv_num}:_ {data.loc[place1_index, 'name']} and {data.loc[place2_index, 'name']}")
     st.write("When we use the latitudes and longitudes of these places as x and y values, we can use the distance formula,")
-    st.latex("d = \sqrt{(x_{2} - x_{1})^2 + (y_{2} - y_{1})^2},")
+    st.latex("\\boxed{d = \sqrt{(x_{2} - x_{1})^2 + (y_{2} - y_{1})^2}},")
     st.write("then we can calculate the distance between the places!")
     st.write(
-        f"The result of that operation is: {(estimate := get_distance(
+        f"The result of that operation is: :red[{(estimate := get_distance(
             estimate_point_1, estimate_point_2
-            ))}km"
+            ))}km]"
         )
-    st.write("But this does not account for the Earth's curvature. Hence, this is only an estimate.")
+    st.write(":orange[But this does not account for the Earth's curvature. Hence, this is only an estimate.]")
     real = gd(real_point_1, real_point_2).km
     st.write(
         f"Accounting for the curvature, an online tool tells us "
-        f"that the distance is {real} km"
+        f"that the distance is :violet[{real} km]"
     )
     st.write("So,")
     st.latex(f"d_{{real}} = {real}")
     st.latex(f"d_{{estimate}} = {estimate}")
-    st.latex(f"Error = d_{{real}} - d_{{estimate}} = {real - estimate}")
+    st.latex(f"\\boxed{{Error = d_{{real}} - d_{{estimate}} = {real - estimate}}}")    
     st.space("medium")
     _, col2, _ = st.columns([1, 3, 1], vertical_alignment="bottom")
     with col2:
@@ -131,15 +131,16 @@ if can_calculate:
 
     st.divider()
     st.header("_The million-dollar question_: Are they collinear?")
-    st.write("Three collinear points always form a triangle with area 0. We can use that logic to identify collinearity of points")
+    st.write("Three collinear points always form a :yellow[triangle with area 0]. We can use that logic to identify collinearity of points")
     st.write("The formula,  ")
-    st.latex(r"\text{Area} = \frac{1}{2}\left|x_1(y_2-y_3)+x_2(y_3-y_1)+x_3(y_1-y_2)\right|")
+    st.latex(r"\boxed{\text{Area} = \frac{1}{2}\left|x_1(y_2-y_3)+x_2(y_3-y_1)+x_3(y_1-y_2)\right|}")
     st.write("gives us the area estimate of any three points on a plane.")
-    st.write(f"Substituting our longitude and latitude values as x and y, we get {(a := check_collinear(p1, p2, p3))} sq. coordinate degrees")
-    if a < TOLERANCE:
-        st.write("As this value is pretty close to zero, considering measurement errors and the huge distances we're dealing with, we can say that the places are collinear")
-    else:
-        st.write("This value is too big to be considered collinear. Hence we can say that the places are not collinear!")
+    st.write(f"Substituting our :green[longitude and latitude values as x and y], we get :rainbow[{(a := check_collinear(p1, p2, p3))} sq. coordinate degrees]")
+    with st.container(border=True):
+        if a < TOLERANCE:
+            st.write("As this value is pretty close to zero, considering measurement errors and the huge distances we're dealing with, we can say that the places are collinear")
+        else:
+            st.write("This value is too big to be considered collinear. Hence we can say that the places are not collinear!")
 
     st.divider()
     chart_container = st.container(width = "stretch", height = 450, horizontal_alignment="center")
